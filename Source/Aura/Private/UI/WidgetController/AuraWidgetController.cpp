@@ -15,3 +15,8 @@ void UAuraWidgetController::BroadcastInitialValues()
 {
 	// virtual function - override
 }
+
+void UAuraWidgetController::BindCallbacksToDependencies()
+{
+	// virtual function - override
+}
