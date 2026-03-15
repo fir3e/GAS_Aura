@@ -26,7 +26,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		}
 	}
 	bStartupAbilitiesGiven = true;
-	AbilitiesGivenDelegate.Broadcast(this);
+	AbilitiesGivenDelegate.Broadcast();
 }
 
 void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupPassiveAbilities)
@@ -97,7 +97,7 @@ FGameplayTag UAuraAbilitySystemComponent::GetAbilityTagFromSpec(const FGameplayA
 
 FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
 {
-	for (FGameplayTag Tag : AbilitySpec.DynamicAbilityTags)
+	for (FGameplayTag Tag : AbilitySpec.GetDynamicSpecSourceTags()) //@fir3e DynamicAbilityTags is deprecated "Use GetDynamicSpecSourceTags()"
 	{
 		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
 		{
@@ -139,7 +139,7 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 	if (!bStartupAbilitiesGiven)
 	{
 		bStartupAbilitiesGiven = true;
-		AbilitiesGivenDelegate.Broadcast(this);
+		AbilitiesGivenDelegate.Broadcast();
 	}
 }
 
