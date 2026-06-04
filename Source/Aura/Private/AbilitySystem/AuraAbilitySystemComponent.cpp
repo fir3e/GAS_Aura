@@ -48,12 +48,19 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
 
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
-		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag))
 		{
 			AbilitySpecInputPressed(AbilitySpec);
 			if (AbilitySpec.IsActive())
 			{
-				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+				// Lekérjük az aktív példányt
+				const UGameplayAbility* AbilityInstance = AbilitySpec.GetPrimaryInstance();
+			
+				// Ha van példány, elkérjük a kulcsát, ha nincs, egy tiszta, üres FPredictionKey-t adunk vissza.
+				// Ezzel teljesen kihagyjuk a hibás AbilitySpec.ActivationInfo változót!
+				FPredictionKey PredictionKey = AbilityInstance ? AbilityInstance->GetCurrentActivationInfo().GetActivationPredictionKey() : FPredictionKey();
+
+				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, PredictionKey);
 			}
 		}
 	}
